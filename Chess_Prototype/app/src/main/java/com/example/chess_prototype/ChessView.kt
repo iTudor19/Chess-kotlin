@@ -27,6 +27,8 @@ class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs)
     private final val bitmaps= mutableMapOf<Int, Bitmap>()
     private final val paint = Paint()
 
+    var chessDelegate: ChessDelegate? = null
+
     init{
         loadBitmaps()
     }
@@ -53,33 +55,39 @@ class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs)
     private fun drawChessboard(canvas:Canvas?)
     {
         val paint= Paint()
-        for(j in 0..7)
+        for(row in 0..7)
         {
-            for(i in 0..7)
+            for(col in 0..7)
             {
-                paint.color = if((i+j)%2==0)Color.LTGRAY else Color.BLUE
-                canvas?.drawRect(
-                    originX + i * cellSide,
-                    originY + j * cellSide,
-                    originX + (i + 1) * cellSide,
-                    originY +(j + 1) * cellSide,paint)
+                drawSquareAt(canvas,row,col,(col+row)%2==0)
+//                paint.color = if((i+j)%2==0)Color.LTGRAY else Color.BLUE
+//                canvas?.drawRect(
+//                    originX + i * cellSide,
+//                    originY + j * cellSide,
+//                    originX + (i + 1) * cellSide,
+//                    originY +(j + 1) * cellSide,paint)
 
             }
         }
     }
 
+    private fun drawSquareAt(canvas: Canvas?,col:Int,row:Int,isDark:Boolean)
+    {
+        paint.color = if(isDark)Color.LTGRAY else Color.BLUE
+        canvas?.drawRect(
+            originX + col * cellSide,
+            originY + row * cellSide,
+            originX + (col + 1) * cellSide,
+            originY +(row + 1) * cellSide,paint)
+    }
+
     private fun drawPieces(canvas:Canvas?)
     {
-        val chessModel = ChessModel()
-        chessModel.reset()
 
         for(row in 0..7){
             for(col in 0..7)
             {
-                val piece = chessModel.pieceAt(col,row)
-                if(piece!=null) {
-                        drawPieceAt(canvas,col,row,piece.resID)
-                    }
+                       chessDelegate?.pieceAt(col,row)?.let{drawPieceAt(canvas,col,row,it.resID)}
                 }
             }
         }
@@ -122,69 +130,3 @@ class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs)
 //        drawPieceAt(canvas,3,7,R.drawable.black_queen)
 //        drawPieceAt(canvas,4,7,R.drawable.black_king)
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//for(j in 0..3) {
-//    for (i in 0..3) {
-//
-//
-//        paint.color = Color.LTGRAY
-//
-//
-//        canvas?.drawRect(
-//            originX + 2 * i * cellSide,
-//            originY + 2 * j * cellSide,
-//            originX + (2 * i + 1) * cellSide,
-//            originY +(2 * j + 1) * cellSide,
-//            paint
-//        )
-//
-//        canvas?.drawRect(
-//            originX + (2 * i+1) * cellSide,
-//            originY + (2 * j+1) * cellSide,
-//            originX + (2 * i + 2) * cellSide,
-//            originY +(2 * j + 2) *cellSide,
-//            paint
-//        )
-//
-//
-//        paint.color = Color.BLUE
-//
-//
-//        canvas?.drawRect(
-//            originX + (2 * i+1)  * cellSide,
-//            originY + 2*j*cellSide,
-//            originX + (2 * i + 2) * cellSide,
-//            originY +(2 * j + 1) * cellSide,
-//            paint
-//        )
-//
-//        canvas?.drawRect(
-//            originX + (2 * i) * cellSide,
-//            originY + (2 * j+1) * cellSide,
-//            originX + (2 * i + 1) * cellSide,
-//            originY + (2 * j + 2) * cellSide,
-//            paint
-//        )
-//    }
-//
-//}
