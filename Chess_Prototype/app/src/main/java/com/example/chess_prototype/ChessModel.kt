@@ -1,5 +1,7 @@
 package com.example.chess_prototype
 
+import android.util.Log
+
 class ChessModel {
     var piecesBox = mutableSetOf<ChessPiece>()
     init {
@@ -7,6 +9,25 @@ class ChessModel {
 
 
     }
+
+    fun movePiece(fromCol:Int,fromRow:Int,toCol:Int,toRow:Int)
+    {
+        if(fromCol==toCol && fromRow==toRow) return
+
+        val movingPiece=pieceAt(fromCol,fromRow)?:return
+
+        pieceAt(toCol,toRow)?.let{
+            if(it.player == movingPiece.player)
+            {
+                return
+            }
+            piecesBox.remove(it)}
+
+        piecesBox.remove(movingPiece)
+        piecesBox.add(ChessPiece(toCol,toRow,movingPiece.player,movingPiece.rank, movingPiece.resID))
+
+    }
+
 
     private fun reset()
     {
