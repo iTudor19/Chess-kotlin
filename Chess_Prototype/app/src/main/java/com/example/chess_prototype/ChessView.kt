@@ -7,7 +7,7 @@ import android.view.View
 import kotlin.math.min
 
 class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs) {
-    private final val scaleFactor = .9f
+    private final val scaleFactor = 1.0f
     private final var originX: Float = 20f
     private final var originY: Float = 200f
     private final var cellSide: Float = 130f
@@ -41,6 +41,12 @@ class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs) {
 
     init {
         loadBitmaps()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val smaller= min(widthMeasureSpec,heightMeasureSpec)
+        setMeasuredDimension(smaller,smaller)
     }
 
     override fun onDraw(canvas: Canvas) {

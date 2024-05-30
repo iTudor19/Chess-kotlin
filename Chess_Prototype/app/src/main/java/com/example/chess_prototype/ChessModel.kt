@@ -29,7 +29,7 @@ class ChessModel {
     }
 
 
-    private fun reset()
+    fun reset()
     {
         piecesBox.removeAll(piecesBox)
 

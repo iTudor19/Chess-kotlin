@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.chess_prototype.ChessView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chess_view"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_gravity="center"
+    android:orientation="vertical">
+    >
 
-</com.example.chess_prototype.ChessView>
+<com.example.chess_prototype.ChessView
+
+    android:id="@+id/chess_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/reset_button"
+        />
+</LinearLayout>
