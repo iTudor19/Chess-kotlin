@@ -69,8 +69,10 @@ class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs) {
                 fromCol = ((event.x - originX) / cellSide).toInt()
                 fromRow = 7 - ((event.y - originY) / cellSide).toInt()
                 chessDelegate?.pieceAt(fromCol,fromRow)?.let{
-                    movingPiece=it
-                    movingPieceBitmap = bitmaps[it.resID]
+                    if (it.player == ChessModel.currentPlayer) {
+                        movingPiece = it
+                        movingPieceBitmap = bitmaps[it.resID]
+                    }
                 }
 
 

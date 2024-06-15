@@ -3,7 +3,11 @@ package com.example.chess_prototype
 import android.util.Log
 
 class ChessModel {
-    var piecesBox = mutableSetOf<ChessPiece>()
+        var piecesBox = mutableSetOf<ChessPiece>()
+    var currentPlayer: ChessPlayer = ChessPlayer.WHITE
+    companion object {
+        val currentPlayer: ChessPlayer = ChessPlayer.WHITE
+    }
     init {
         reset()
 
@@ -16,6 +20,22 @@ class ChessModel {
 
         val movingPiece=pieceAt(fromCol,fromRow)?:return
 
+        if (movingPiece.player != currentPlayer) {
+            return
+        }
+
+        if (movingPiece.rank == ChessRank.PAWN) {
+            if (movingPiece.player == ChessPlayer.WHITE) {
+                if (toRow != fromRow + 1 || toCol != fromCol || pieceAt(toCol, toRow) != null) {
+                    return
+                }
+            } else if (movingPiece.player == ChessPlayer.BLACK) {
+                if (toRow != fromRow - 1 || toCol != fromCol || pieceAt(toCol, toRow) != null) {
+                    return
+                }
+            }
+        }
+
         pieceAt(toCol,toRow)?.let{
             if(it.player == movingPiece.player)
             {
@@ -24,14 +44,19 @@ class ChessModel {
             piecesBox.remove(it)}
 
         piecesBox.remove(movingPiece)
+        if (movingPiece.rank == ChessRank.KING) {
+            val kingColor = if (movingPiece.player == ChessPlayer.WHITE) "alb" else "negru"
+            Log.d(TAG, "Regele $kingColor a fost capturat")
+        }
         piecesBox.add(ChessPiece(toCol,toRow,movingPiece.player,movingPiece.rank, movingPiece.resID))
+        currentPlayer = if (currentPlayer == ChessPlayer.WHITE) ChessPlayer.BLACK else ChessPlayer.WHITE
 
     }
-
 
     fun reset()
     {
         piecesBox.removeAll(piecesBox)
+        currentPlayer = ChessPlayer.WHITE
 
         // Piese albe
         piecesBox.add(ChessPiece(0, 0, ChessPlayer.WHITE, ChessRank.ROOK,R.drawable.white_rook))
@@ -131,4 +156,5 @@ fun pieceAt(col: Int, row:Int):ChessPiece?
         desc += "  0 1 2 3 4 5 6 7"
         return desc
     }
+
 }
