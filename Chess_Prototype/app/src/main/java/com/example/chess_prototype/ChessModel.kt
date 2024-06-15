@@ -4,15 +4,15 @@ import android.util.Log
 
 class ChessModel {
         var piecesBox = mutableSetOf<ChessPiece>()
-    var currentPlayer: ChessPlayer = ChessPlayer.WHITE
     companion object {
-        val currentPlayer: ChessPlayer = ChessPlayer.WHITE
+        var currentPlayer: ChessPlayer = ChessPlayer.WHITE
     }
     init {
         reset()
 
 
     }
+    
 
     fun movePiece(fromCol:Int,fromRow:Int,toCol:Int,toRow:Int)
     {
@@ -25,15 +25,36 @@ class ChessModel {
         }
 
         if (movingPiece.rank == ChessRank.PAWN) {
+
+
+
             if (movingPiece.player == ChessPlayer.WHITE) {
-                if (toRow != fromRow + 1 || toCol != fromCol || pieceAt(toCol, toRow) != null) {
+                if (fromRow == 1)
+                {if (((toRow != fromRow + 2)&&(toRow != fromRow + 1)) || toCol != fromCol || pieceAt(toCol, toRow) != null)
                     return
                 }
-            } else if (movingPiece.player == ChessPlayer.BLACK) {
+                    else
+                {if (toRow != fromRow + 1 || toCol != fromCol || pieceAt(toCol, toRow) != null)
+                    return
+                }
+            }
+
+
+            else if (movingPiece.player == ChessPlayer.BLACK) {
+                if  (fromRow == 6)
+                {
+                    if (((toRow != fromRow - 2)&&(toRow != fromRow - 1)) || toCol != fromCol || pieceAt(toCol, toRow) != null) {
+                        return
+                    }
+                }
+                else
                 if (toRow != fromRow - 1 || toCol != fromCol || pieceAt(toCol, toRow) != null) {
                     return
                 }
             }
+
+
+
         }
 
         pieceAt(toCol,toRow)?.let{
