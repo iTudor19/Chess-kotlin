@@ -7,7 +7,7 @@ import android.view.View
 import kotlin.math.min
 
 class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs) {
-    private final val scaleFactor = 0.9f
+    private final val scaleFactor = 0.75f
     private final var originX: Float = 20f
     private final var originY: Float = 200f
     private final var cellSide: Float = 130f
@@ -24,6 +24,12 @@ class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs) {
         R.drawable.black_knight,
         R.drawable.black_queen,
         R.drawable.black_king,
+        R.drawable.u_black_pawn,
+        R.drawable.u_black_queen,
+        R.drawable.u_black_rook,
+        R.drawable.u_white_pawn,
+        R.drawable.u_white_queen,
+        R.drawable.u_white_rook
 
         )
     private val bitmaps = mutableMapOf<Int, Bitmap>()

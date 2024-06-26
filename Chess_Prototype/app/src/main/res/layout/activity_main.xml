@@ -6,40 +6,38 @@
     android:layout_gravity="center"
     android:orientation="vertical">
 
-
-<com.example.chess_prototype.ChessView
-
-    android:id="@+id/chess_view"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+    <com.example.chess_prototype.ChessView
+        android:id="@+id/chess_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-    
-         <Button
+
+        <Button
             android:id="@+id/reset_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             android:layout_margin="8dp"
+            android:layout_margin="8dp"
             android:text="@string/reset_button" />
 
         <Button
-            android:id="@+id/listen_button"
+            android:id="@+id/white_move_count_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="@string/listen_buttton" />
+            android:text="White Moves: 0" />
 
         <Button
-            android:id="@+id/connect_button"
+            android:id="@+id/black_move_count_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="@string/connect_buttton" />
+            android:text="Black Moves: 0" />
 
-    </LinearLayout>>
+    </LinearLayout>
 
 </LinearLayout>

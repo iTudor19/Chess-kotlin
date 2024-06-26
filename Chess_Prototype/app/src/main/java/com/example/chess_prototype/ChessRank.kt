@@ -6,5 +6,8 @@ enum class ChessRank {
     BISHOP,
     ROOK,
     KNIGHT,
-    PAWN
+    PAWN,
+    UQUEEN,
+    UROOK,
+    UPAWN
 }
