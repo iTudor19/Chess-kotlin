@@ -55,7 +55,6 @@ const val TAG = "MainActivity"
                 chessView.invalidate()
             }
 
-            // Add onClick listeners for new buttons
             findViewById<Button>(R.id.white_upgrade_queen_button).setOnClickListener {
                 chessModel.upgradeQueen(ChessPlayer.WHITE)
                 chessView.invalidate()
@@ -96,7 +95,6 @@ const val TAG = "MainActivity"
                 chessView.invalidate()
             }
 
-            // Existing observers
             chessModel.whiteMoveCount.observe(this, Observer { count ->
                 findViewById<Button>(R.id.white_move_count_button).text = "R"
                 startBlackTimer()
@@ -128,7 +126,6 @@ const val TAG = "MainActivity"
                 }
 
                 override fun onFinish() {
-                    // Handle timer finish for white
                 }
             }
 
@@ -139,7 +136,6 @@ const val TAG = "MainActivity"
                 }
 
                 override fun onFinish() {
-                    // Handle timer finish for black
                 }
             }
         }

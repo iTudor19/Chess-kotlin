@@ -465,7 +465,6 @@ class ChessModel {
             if (piece.player == ChessPlayer.WHITE && piece.rank == ChessRank.QUEEN) {
                 val queenPosition = Pair(piece.col, piece.row)
 
-                // Verificare pentru un pătrat în orice direcție
                 val dx = Math.abs(queenPosition.first - blackKingPosition.first)
                 val dy = Math.abs(queenPosition.second - blackKingPosition.second)
                 if (dx <= 1 && dy <= 1) {
@@ -473,19 +472,16 @@ class ChessModel {
                     return true
                 }
 
-                // Verificare pe coloană
                 if (queenPosition.first == blackKingPosition.first && isClearColPath(queenPosition, blackKingPosition)) {
                     Log.d(TAG, "Regele negru este în șah de regină albă")
                     return true
                 }
 
-                // Verificare pe rând
                 if (queenPosition.second == blackKingPosition.second && isClearRowPath(queenPosition, blackKingPosition)) {
                     Log.d(TAG, "Regele negru este în șah de regină albă")
                     return true
                 }
 
-                // Verificare pe diagonală
                 if (dx == dy && isClearDiagonalPath(queenPosition, blackKingPosition)) {
                     Log.d(TAG, "Regele negru este în șah de regină albă")
                     return true
@@ -504,7 +500,6 @@ class ChessModel {
             if (piece.player == ChessPlayer.BLACK && piece.rank == ChessRank.QUEEN) {
                 val queenPosition = Pair(piece.col, piece.row)
 
-                // Verificare pentru un pătrat în orice direcție
                 val dx = Math.abs(queenPosition.first - whiteKingPosition.first)
                 val dy = Math.abs(queenPosition.second - whiteKingPosition.second)
                 if ((dx <= 1 && dy <= 1)&&(true)) {
@@ -512,19 +507,16 @@ class ChessModel {
                     return true
                 }
 
-                // Verificare pe coloană
                 if (queenPosition.first == whiteKingPosition.first && isClearColPath(queenPosition, whiteKingPosition)) {
                     Log.d(TAG, "Regele alb este în șah de regină neagră")
                     return true
                 }
 
-                // Verificare pe rând
                 if (queenPosition.second == whiteKingPosition.second && isClearRowPath(queenPosition, whiteKingPosition)) {
                     Log.d(TAG, "Regele alb este în șah de regină neagră")
                     return true
                 }
 
-                // Verificare pe diagonală
                 if (dx == dy && isClearDiagonalPath(queenPosition, whiteKingPosition)) {
                     Log.d(TAG, "Regele alb este în șah de regină neagră")
                     return true
@@ -552,9 +544,8 @@ class ChessModel {
     fun isUWhiteQueenChecking(kingPosition: Pair<Int, Int>): Boolean {
         val (kingCol, kingRow) = kingPosition
 
-        // Check one-square moves in all directions
         val directions = listOf(
-            Pair(1, 0), Pair(-1, 0), // Horizontal
+            Pair(1, 0), Pair(-1, 0), // Orizontal
             Pair(0, 1), Pair(0, -1), // Vertical
             Pair(1, 1), Pair(-1, -1), // Diagonal
             Pair(1, -1), Pair(-1, 1) // Diagonal
@@ -569,16 +560,14 @@ class ChessModel {
                 }
         }
 
-        // Check rook-like moves
         return checkRookMovesForUQueen(kingCol, kingRow, ChessPlayer.WHITE)
     }
 
     fun isUBlackQueenChecking(kingPosition: Pair<Int, Int>): Boolean {
         val (kingCol, kingRow) = kingPosition
 
-        // Check one-square moves in all directions
         val directions = listOf(
-            Pair(1, 0), Pair(-1, 0), // Horizontal
+            Pair(1, 0), Pair(-1, 0), // Orizontal
             Pair(0, 1), Pair(0, -1), // Vertical
             Pair(1, 1), Pair(-1, -1), // Diagonal
             Pair(1, -1), Pair(-1, 1) // Diagonal
@@ -593,13 +582,12 @@ class ChessModel {
             }
         }
 
-        // Check rook-like moves
         return checkRookMovesForUQueen(kingCol, kingRow, ChessPlayer.BLACK)
     }
 
     fun checkRookMovesForUQueen(kingCol: Int, kingRow: Int, player: ChessPlayer): Boolean {
         val directions = listOf(
-            Pair(1, 0), Pair(-1, 0), // Horizontal
+            Pair(1, 0), Pair(-1, 0), // Orizontal
             Pair(0, 1), Pair(0, -1) // Vertical
         )
 
@@ -842,17 +830,14 @@ class ChessModel {
     }
 
     fun canKingEscapeCheckmate(kingColor: ChessPlayer): Boolean {
-        // Verificăm dacă regele este în șah
         if (kingColor == ChessPlayer.WHITE && !alb_in_sah()) {
-            return true // Regele alb nu este în șah, deci poate să scape
+            return true
         } else if (kingColor == ChessPlayer.BLACK && !negru_in_sah()) {
-            return true // Regele negru nu este în șah, deci poate să scape
+            return true
         }
 
-        // Determinăm poziția regelui
         val kingPosition = if (kingColor == ChessPlayer.WHITE) Pair(whiteKingCol, whiteKingRow) else Pair(blackKingCol, blackKingRow)
 
-        // Verificăm toate posibilele mutări ale regelui
         val possibleMoves = arrayOf(
             Pair(kingPosition.first + 1, kingPosition.second),
             Pair(kingPosition.first - 1, kingPosition.second),
@@ -866,10 +851,8 @@ class ChessModel {
 
         for (move in possibleMoves) {
             if (move.first in 0..7 && move.second in 0..7) {
-                // Salvăm piesa de pe poziția de destinație (dacă există una acolo)
                 val destinationPiece = pieceAt(move.first, move.second)
 
-                // Mutăm temporar regele
                 if (kingColor == ChessPlayer.WHITE) {
                     whiteKingCol = move.first
                     whiteKingRow = move.second
@@ -878,10 +861,8 @@ class ChessModel {
                     blackKingRow = move.second
                 }
 
-                // Verificăm dacă regele nu mai este în șah după mutarea temporară
                 val isCheck = if (kingColor == ChessPlayer.WHITE) alb_in_sah() else negru_in_sah()
                 if (!isCheck) {
-                    // Dacă nu este în șah, putem reveni la poziția inițială a regelui și returna true
                     if (kingColor == ChessPlayer.WHITE) {
                         whiteKingCol = kingPosition.first
                         whiteKingRow = kingPosition.second
@@ -892,7 +873,6 @@ class ChessModel {
                     return true
                 }
 
-                // Dacă este în șah, revenim la starea inițială a regelui
                 if (kingColor == ChessPlayer.WHITE) {
                     whiteKingCol = kingPosition.first
                     whiteKingRow = kingPosition.second
@@ -901,14 +881,13 @@ class ChessModel {
                     blackKingRow = kingPosition.second
                 }
 
-                // Punem înapoi piesa pe poziția de destinație (dacă exista una)
                 if (destinationPiece != null) {
                     piecesBox.add(destinationPiece)
                 }
             }
         }
 
-        return false // Nu există mutare prin care regele să scape de șah mat
+        return false
     }
 
 
