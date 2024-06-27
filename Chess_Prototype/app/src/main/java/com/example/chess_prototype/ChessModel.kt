@@ -1230,30 +1230,31 @@ class ChessModel {
     }
 
 
-    fun decrementMoveCount(player: ChessPlayer) {
+    fun upgradeRook(player: ChessPlayer) {
         when (player) {
             ChessPlayer.WHITE -> {
-                whiteMoveCount.value = whiteMoveCount.value?.minus(2)
                 if (whiteMoveCount.value ?: 0 >= 4) {
                     changeToURook(ChessPlayer.WHITE)
                 }
+                whiteMoveCount.value = whiteMoveCount.value?.minus(4)
             }
             ChessPlayer.BLACK -> {
-                blackMoveCount.value = blackMoveCount.value?.minus(2)
                 if (blackMoveCount.value ?: 0 >= 4) {
                     changeToURook(ChessPlayer.BLACK)
                 }
+                blackMoveCount.value = blackMoveCount.value?.minus(4)
             }
         }
     }
 
     private fun changeToURook(player: ChessPlayer) {
-        val rookCol = if (player == ChessPlayer.WHITE) 7 else 7
-        val rookRow = if (player == ChessPlayer.WHITE) 0 else 7
-        val rook = pieceAt(rookCol, rookRow)
-        if (rook != null && rook.rank == ChessRank.ROOK && rook.player == player) {
+        // Căutăm toate piesele de tip turn ale jucătorului curent
+        val rook = piecesBox.find { it.rank == ChessRank.ROOK && it.player == player }
+
+        // Dacă am găsit o piesă de tip turn, o upgradem la UROOK
+        if (rook != null) {
             piecesBox.remove(rook)
-            piecesBox.add(ChessPiece(rookCol, rookRow, player, ChessRank.UROOK, if (player == ChessPlayer.WHITE) R.drawable.u_white_rook else R.drawable.u_black_rook))
+            piecesBox.add(ChessPiece(rook.col, rook.row, player, ChessRank.UROOK, if (player == ChessPlayer.WHITE) R.drawable.u_white_rook else R.drawable.u_black_rook))
         }
     }
 
@@ -1279,7 +1280,7 @@ class ChessModel {
         blackMoveCount.value = 0
 
         // Piese albe
-        piecesBox.add(ChessPiece(0, 0, ChessPlayer.WHITE, ChessRank.UROOK,R.drawable.u_white_rook))
+        piecesBox.add(ChessPiece(0, 0, ChessPlayer.WHITE, ChessRank.ROOK,R.drawable.white_rook))
         piecesBox.add(ChessPiece(1, 0, ChessPlayer.WHITE, ChessRank.KNIGHT,R.drawable.white_knight))
         piecesBox.add(ChessPiece(2, 0, ChessPlayer.WHITE, ChessRank.BISHOP,R.drawable.white_bishop))
         piecesBox.add(ChessPiece(3, 0, ChessPlayer.WHITE, ChessRank.UQUEEN,R.drawable.u_white_queen))
@@ -1298,7 +1299,7 @@ class ChessModel {
         piecesBox.add(ChessPiece(7, 1, ChessPlayer.WHITE, ChessRank.PAWN,R.drawable.white_pawn))
 
 // Piese negre
-        piecesBox.add(ChessPiece(0, 7, ChessPlayer.BLACK, ChessRank.UROOK,R.drawable.u_black_rook))
+        piecesBox.add(ChessPiece(0, 7, ChessPlayer.BLACK, ChessRank.ROOK,R.drawable.black_rook))
         piecesBox.add(ChessPiece(1, 7, ChessPlayer.BLACK, ChessRank.KNIGHT,R.drawable.black_knight))
         piecesBox.add(ChessPiece(2, 7, ChessPlayer.BLACK, ChessRank.BISHOP,R.drawable.black_bishop))
         piecesBox.add(ChessPiece(3, 7, ChessPlayer.BLACK, ChessRank.UQUEEN,R.drawable.u_black_queen))

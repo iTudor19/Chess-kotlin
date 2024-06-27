@@ -26,12 +26,12 @@ class MainActivity : AppCompatActivity(), ChessDelegate {
         }
 
         findViewById<Button>(R.id.white_move_count_button).setOnClickListener {
-            chessModel.decrementMoveCount(ChessPlayer.WHITE)
+            chessModel.upgradeRook(ChessPlayer.WHITE)
             chessView.invalidate()
         }
 
         findViewById<Button>(R.id.black_move_count_button).setOnClickListener {
-            chessModel.decrementMoveCount(ChessPlayer.BLACK)
+            chessModel.upgradeRook(ChessPlayer.BLACK)
             chessView.invalidate()
         }
 
