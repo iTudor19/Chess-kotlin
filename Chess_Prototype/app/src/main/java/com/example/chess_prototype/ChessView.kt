@@ -7,10 +7,10 @@ import android.view.View
 import kotlin.math.min
 
 class ChessView(context: Context?, attrs:AttributeSet) :View(context,attrs) {
-    private final val scaleFactor = 0.75f
+    private final val scaleFactor = 0.8f
     private final var originX: Float = 20f
-    private final var originY: Float = 200f
-    private final var cellSide: Float = 130f
+    private final var originY: Float = 250f
+    private final var cellSide: Float = 120f
     private final val imgResIDs = setOf(
         R.drawable.white_rook,
         R.drawable.white_pawn,

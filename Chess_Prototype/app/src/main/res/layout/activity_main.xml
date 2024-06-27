@@ -1,43 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:orientation="vertical">
 
     <com.example.chess_prototype.ChessView
         android:id="@+id/chess_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="362dp" />
 
-    <LinearLayout
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:columnCount="3"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:rowCount="6">
+
+
+        <TextView
+            android:id="@+id/black_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_margin="16dp"
+            android:background="#E0E0E0"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="10:00"
+            android:textSize="18sp"
+            android:rotation="180"/>
 
         <Button
             android:id="@+id/reset_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/reset_button" />
+            android:layout_height="33dp"
+            android:layout_margin="4dp"
+            android:text="@string/reset_button"
+            android:textSize="12sp" />
 
-        <Button
-            android:id="@+id/white_move_count_button"
+
+        <TextView
+            android:id="@+id/white_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="White Moves: 0" />
+            android:layout_margin="16dp"
+            android:background="#E0E0E0"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="10:00"
+            android:textSize="18sp"
+            />
+
+        <Button
+            android:id="@+id/black_move_count_display"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_margin="4dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="Negru: 0"
+            android:textSize="12sp"
+            android:rotation="180"
+            android:backgroundTint="@android:color/holo_red_light"/>/>
+
+        <Button
+            android:id="@+id/black_upgrade_pawn_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:text="p"
+            android:textSize="12sp"
+            android:rotation="180"
+            android:backgroundTint="@android:color/holo_red_light"/>
+
+
+
+
+
+        <Button
+            android:id="@+id/white_move_count_display"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_margin="4dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="Alb: 0"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/holo_orange_light"/>
 
         <Button
             android:id="@+id/black_move_count_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Black Moves: 0" />
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:text="r"
+            android:textSize="12sp"
+            android:rotation="180"
+            android:backgroundTint="@android:color/holo_red_light"/>/>
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/white_upgrade_pawn_button"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="4dp"
+            android:text="P"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/holo_orange_light"/>
+
+        <Button
+            android:id="@+id/white_move_count_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:text="R"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/holo_orange_light"/>
+
+
+
+
+        <Button
+            android:id="@+id/black_upgrade_queen_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:text="q"
+            android:textSize="12sp"
+            android:rotation="180"
+            android:backgroundTint="@android:color/holo_red_light"/>/>
+
+        <Button
+            android:id="@+id/white_upgrade_knight_button"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_margin="4dp"
+            android:text="N"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/holo_orange_light"/>
+
+        <Button
+            android:id="@+id/white_upgrade_queen_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:text="Q"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/holo_orange_light"/>
+
+
+
+        <Button
+            android:id="@+id/black_upgrade_knight_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:text="n"
+            android:textSize="12sp"
+            android:rotation="180"
+            android:backgroundTint="@android:color/holo_red_light"/>/>
+
+        <Button
+            android:id="@+id/black_upgrade_bishop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_margin="4dp"
+            android:text="b"
+            android:textSize="12sp"
+            android:rotation="180"
+            android:backgroundTint="@android:color/holo_red_light"/>
+
+
+        <Button
+            android:id="@+id/white_upgrade_bishop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_margin="4dp"
+            android:text="B"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/holo_orange_light"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </GridLayout>
+
 
 </LinearLayout>

@@ -25,6 +25,7 @@ class ChessModel {
     var blackKingCol: Int = 4
     var blackKingRow: Int = 7
 
+    var eliminare: Int = 0
 
 
 
@@ -198,25 +199,40 @@ class ChessModel {
                     whiteKingMoved = true
 
                     val rook = pieceAt(0, 0)!!
-                    piecesBox.remove(rook)
+                    if(rook.rank == ChessRank.ROOK && rook.player == ChessPlayer.WHITE)
+                    {piecesBox.remove(rook)
                     piecesBox.add(ChessPiece(3, 0, ChessPlayer.WHITE, ChessRank.ROOK, R.drawable.white_rook))
                     whiteRookMoved[0] = true
-
-                    //currentPlayer = ChessPlayer.BLACK
-                    return
+                        currentPlayer = ChessPlayer.BLACK
+                    return}
+                    else
+                    {piecesBox.remove(rook)
+                        piecesBox.add(ChessPiece(3, 0, ChessPlayer.WHITE, ChessRank.UROOK, R.drawable.u_white_rook))
+                        whiteRookMoved[0] = true
+                        currentPlayer = ChessPlayer.BLACK
+                        return}
                 } else if (toCol == 6 && toRow == 0 && canWhiteCastleKingside()) {
                     piecesBox.remove(movingPiece)
                     piecesBox.add(ChessPiece(6, 0, ChessPlayer.WHITE, ChessRank.KING, R.drawable.white_king))
                     whiteKingMoved = true
 
                     val rook = pieceAt(7, 0)!!
-                    piecesBox.remove(rook)
+                    if(rook.rank == ChessRank.ROOK && rook.player == ChessPlayer.WHITE)
+                    {piecesBox.remove(rook)
                     piecesBox.add(ChessPiece(5, 0, ChessPlayer.WHITE, ChessRank.ROOK, R.drawable.white_rook))
                     whiteRookMoved[1] = true
-
-                    //currentPlayer = ChessPlayer.BLACK
-                    return
+                        currentPlayer = ChessPlayer.BLACK
+                    return}
+                    else {
+                        piecesBox.remove(rook)
+                            piecesBox.add(ChessPiece(5, 0, ChessPlayer.WHITE, ChessRank.UROOK, R.drawable.u_white_rook))
+                            whiteRookMoved[1] = true
+                        currentPlayer = ChessPlayer.BLACK
+                        return
+                    }
                 }
+                else if (!whiteKingVer(fromCol, fromRow, toCol, toRow))
+                    return
             }
 
             if (movingPiece.rank == ChessRank.KING && movingPiece.player == ChessPlayer.BLACK) {
@@ -226,25 +242,46 @@ class ChessModel {
                     blackKingMoved = true
 
                     val rook = pieceAt(0, 7)!!
-                    piecesBox.remove(rook)
+                    if(rook.rank == ChessRank.ROOK && rook.player == ChessPlayer.BLACK)
+                    { piecesBox.remove(rook)
                     piecesBox.add(ChessPiece(3, 7, ChessPlayer.BLACK, ChessRank.ROOK, R.drawable.black_rook))
                     blackRookMoved[0] = true
+                        currentPlayer = ChessPlayer.WHITE
 
-                    currentPlayer = ChessPlayer.WHITE
-                    return
+                    return}
+                    else{
+                        piecesBox.remove(rook)
+                        piecesBox.add(ChessPiece(3, 7, ChessPlayer.BLACK, ChessRank.UROOK, R.drawable.u_black_rook))
+                        blackRookMoved[0] = true
+                        currentPlayer = ChessPlayer.WHITE
+                        return
+                    }
                 } else if (toCol == 6 && toRow == 7 && canBlackCastleKingside()) {
                     piecesBox.remove(movingPiece)
                     piecesBox.add(ChessPiece(6, 7, ChessPlayer.BLACK, ChessRank.KING, R.drawable.black_king))
                     blackKingMoved = true
 
                     val rook = pieceAt(7, 7)!!
+                    if(rook.rank == ChessRank.ROOK && rook.player == ChessPlayer.BLACK)
+                    {
                     piecesBox.remove(rook)
                     piecesBox.add(ChessPiece(5, 7, ChessPlayer.BLACK, ChessRank.ROOK, R.drawable.black_rook))
                     blackRookMoved[1] = true
-
-                    currentPlayer = ChessPlayer.WHITE
+                        currentPlayer = ChessPlayer.WHITE
                     return
+                    }
+                    else{
+                        piecesBox.remove(rook)
+                        piecesBox.add(ChessPiece(5, 7, ChessPlayer.BLACK, ChessRank.UROOK, R.drawable.u_black_rook))
+                        blackRookMoved[1] = true
+                        currentPlayer = ChessPlayer.WHITE
+
+
+                        return
+                    }
                 }
+                else if (!blackKingVer(fromCol, fromRow, toCol, toRow))
+                    return
             }
 
             var isCheck = if (currentPlayer == ChessPlayer.WHITE) alb_in_sah() else negru_in_sah()
@@ -270,14 +307,30 @@ class ChessModel {
         piecesBox.add(ChessPiece(toCol,toRow,movingPiece.player,movingPiece.rank, movingPiece.resID))
             currentPlayer = if (currentPlayer == ChessPlayer.WHITE) ChessPlayer.BLACK else ChessPlayer.WHITE
 
-            // Verifică dacă regele oponent este în șah sau șah mat
-            when (currentPlayer) {
-                ChessPlayer.WHITE -> whiteMoveCount.value = whiteMoveCount.value?.plus(1)
-                ChessPlayer.BLACK -> blackMoveCount.value = blackMoveCount.value?.plus(1)
-            }
+                when (currentPlayer) {
+                    ChessPlayer.BLACK ->whiteMoveCount.value = whiteMoveCount.value?.plus(1)
+                    ChessPlayer.WHITE ->{
+                        blackMoveCount.value = blackMoveCount.value?.plus(1)
+                        eliminare = eliminare + 1
+                        if(eliminare % 20 == 0)
+                        {
+                                downgradeKinght(ChessPlayer.WHITE)
+                                downgradeKinght(ChessPlayer.BLACK)
+                                downgradeBishop(ChessPlayer.WHITE)
+                                downgradeBishop(ChessPlayer.BLACK)
+                                downgradeQueen(ChessPlayer.WHITE)
+                                downgradeQueen(ChessPlayer.BLACK)
+                                downgradeRook(ChessPlayer.WHITE)
+                                downgradeRook(ChessPlayer.BLACK)
+                                downgradePawn(ChessPlayer.WHITE)
+                                downgradePawn(ChessPlayer.BLACK)
+                        }
+                    }
+
+                }
             if ((currentPlayer == ChessPlayer.BLACK && negru_in_sah()) || (currentPlayer == ChessPlayer.WHITE && alb_in_sah())) {
                 Log.d(TAG, "Șah")
-                if (!canKingEscapeCheck(opponent(currentPlayer))) {
+                if (!canKingEscapeCheckmate(currentPlayer)) {
                     Log.d(TAG, "Șah Mat pentru ${if (opponent(currentPlayer) == ChessPlayer.WHITE) "Alb" else "Negru"}")
                 }
             }
@@ -367,126 +420,211 @@ class ChessModel {
         return false
     }
 
-    fun isBlackKingInCheckByWhiteQueen(): Boolean {
+    fun isBlackKingInCheckByUWhiteRook(): Boolean {
         val blackKingPosition = Pair(blackKingCol, blackKingRow)
+
+        for (piece in piecesBox) {
+            if (piece.player == ChessPlayer.WHITE && piece.rank == ChessRank.UROOK) {
+                val rookPosition = Pair(piece.col, piece.row)
+                if (isSameRow(rookPosition,blackKingPosition) && isClearRowPath(rookPosition,blackKingPosition)) {
+                    Log.d(TAG, "Regele negru este în șah de utura")
+                    return true
+                }
+                if (isSameCol(rookPosition,blackKingPosition) && isClearColPath(rookPosition,blackKingPosition)) {
+                    Log.d(TAG, "Regele negru este în șah de utura")
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    fun isWhiteKingInCheckByUBlackRook(): Boolean {
+        val whiteKingPosition = Pair(whiteKingCol, whiteKingRow)
+
+        for (piece in piecesBox) {
+            if (piece.player == ChessPlayer.BLACK && piece.rank == ChessRank.UROOK) {
+                val rookPosition = Pair(piece.col, piece.row)
+                if (isSameRow(rookPosition,whiteKingPosition) && isClearRowPath(rookPosition,whiteKingPosition)) {
+                    Log.d(TAG, "Regele alb este în șah de utura")
+                    return true
+                }
+                if (isSameCol(rookPosition,whiteKingPosition) && isClearColPath(rookPosition,whiteKingPosition)) {
+                    Log.d(TAG, "Regele alb este în șah de utura")
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun isBlackKingInCheckByWhiteQueen(): Boolean {
+        val blackKingPosition = piecesBox.find { it.rank == ChessRank.KING && it.player == ChessPlayer.BLACK }?.let { Pair(it.col, it.row) }
+            ?: return false
 
         for (piece in piecesBox) {
             if (piece.player == ChessPlayer.WHITE && piece.rank == ChessRank.QUEEN) {
                 val queenPosition = Pair(piece.col, piece.row)
 
-                if (queenPosition.first == blackKingPosition.first || queenPosition.second == blackKingPosition.second) {
-                    var clearPath = true
-                    for (col in minOf(queenPosition.first, blackKingPosition.first) + 1 until maxOf(queenPosition.first, blackKingPosition.first)) {
-                        if (pieceAt(col, queenPosition.second) != null) {
-                            clearPath = false
-                            break
-                        }
-                    }
-                    if (clearPath) {
-                        Log.d(TAG, "Regele negru este în șah de regină")
-                        return true
-                    }
-                    clearPath = true
-                    for (row in minOf(queenPosition.second, blackKingPosition.second) + 1 until maxOf(queenPosition.second, blackKingPosition.second)) {
-                        if (pieceAt(queenPosition.first, row) != null) {
-                            clearPath = false
-                            break
-                        }
-                    }
-                    if (clearPath) {
-                        Log.d(TAG, "Regele negru este în șah de regină")
-                        return true
-                    }
+                // Verificare pentru un pătrat în orice direcție
+                val dx = Math.abs(queenPosition.first - blackKingPosition.first)
+                val dy = Math.abs(queenPosition.second - blackKingPosition.second)
+                if (dx <= 1 && dy <= 1) {
+                    Log.d(TAG, "Regele negru este în șah de regină albă")
+                    return true
                 }
 
-                if (Math.abs(queenPosition.first - blackKingPosition.first) == Math.abs(queenPosition.second - blackKingPosition.second)) {
-                    var clearPath = true
-                    val startCol = minOf(queenPosition.first, blackKingPosition.first) + 1
-                    val endCol = maxOf(queenPosition.first, blackKingPosition.first)
-                    val startRow = if (queenPosition.first < blackKingPosition.first) queenPosition.second + 1 else blackKingPosition.second + 1
-                    val endRow = if (queenPosition.first < blackKingPosition.first) blackKingPosition.second else queenPosition.second
+                // Verificare pe coloană
+                if (queenPosition.first == blackKingPosition.first && isClearColPath(queenPosition, blackKingPosition)) {
+                    Log.d(TAG, "Regele negru este în șah de regină albă")
+                    return true
+                }
 
-                    var col = startCol
-                    var row = startRow
-                    while (col < endCol) {
-                        if (pieceAt(col, row) != null) {
-                            clearPath = false
-                            break
-                        }
-                        col++
-                        if (queenPosition.first < blackKingPosition.first) row++ else row--
-                    }
+                // Verificare pe rând
+                if (queenPosition.second == blackKingPosition.second && isClearRowPath(queenPosition, blackKingPosition)) {
+                    Log.d(TAG, "Regele negru este în șah de regină albă")
+                    return true
+                }
 
-                    if (clearPath) {
-                        Log.d(TAG, "Regele negru este în șah de regină")
-                        return true
-                    }
+                // Verificare pe diagonală
+                if (dx == dy && isClearDiagonalPath(queenPosition, blackKingPosition)) {
+                    Log.d(TAG, "Regele negru este în șah de regină albă")
+                    return true
                 }
             }
         }
 
         return false
     }
+
     fun isWhiteKingInCheckByBlackQueen(): Boolean {
-        val whiteKingPosition = Pair(whiteKingCol, whiteKingRow)
+        val whiteKingPosition = piecesBox.find { it.rank == ChessRank.KING && it.player == ChessPlayer.WHITE }?.let { Pair(it.col, it.row) }
+            ?: return false
 
         for (piece in piecesBox) {
             if (piece.player == ChessPlayer.BLACK && piece.rank == ChessRank.QUEEN) {
                 val queenPosition = Pair(piece.col, piece.row)
 
-                if (queenPosition.first == whiteKingPosition.first || queenPosition.second == whiteKingPosition.second) {
-                    var clearPath = true
-                    for (col in minOf(queenPosition.first, whiteKingPosition.first) + 1 until maxOf(queenPosition.first, whiteKingPosition.first)) {
-                        if (pieceAt(col, queenPosition.second) != null) {
-                            clearPath = false
-                            break
-                        }
-                    }
-                    if (clearPath) {
-                        Log.d(TAG, "Regele alb este în șah de regină neagră")
-                        return true
-                    }
-                    clearPath = true
-                    for (row in minOf(queenPosition.second, whiteKingPosition.second) + 1 until maxOf(queenPosition.second, whiteKingPosition.second)) {
-                        if (pieceAt(queenPosition.first, row) != null) {
-                            clearPath = false
-                            break
-                        }
-                    }
-                    if (clearPath) {
-                        Log.d(TAG, "Regele alb este în șah de regină neagră")
-                        return true
-                    }
+                // Verificare pentru un pătrat în orice direcție
+                val dx = Math.abs(queenPosition.first - whiteKingPosition.first)
+                val dy = Math.abs(queenPosition.second - whiteKingPosition.second)
+                if ((dx <= 1 && dy <= 1)&&(true)) {
+                    Log.d(TAG, "Regele alb este în șah de regină neagră")
+                    return true
                 }
 
-                if (Math.abs(queenPosition.first - whiteKingPosition.first) == Math.abs(queenPosition.second - whiteKingPosition.second)) {
-                    var clearPath = true
-                    val startCol = minOf(queenPosition.first, whiteKingPosition.first) + 1
-                    val endCol = maxOf(queenPosition.first, whiteKingPosition.first)
-                    val startRow = if (queenPosition.first < whiteKingPosition.first) queenPosition.second + 1 else whiteKingPosition.second + 1
-                    val endRow = if (queenPosition.first < whiteKingPosition.first) whiteKingPosition.second else queenPosition.second
+                // Verificare pe coloană
+                if (queenPosition.first == whiteKingPosition.first && isClearColPath(queenPosition, whiteKingPosition)) {
+                    Log.d(TAG, "Regele alb este în șah de regină neagră")
+                    return true
+                }
 
-                    var col = startCol
-                    var row = startRow
-                    while (col < endCol) {
-                        if (pieceAt(col, row) != null) {
-                            clearPath = false
-                            break
-                        }
-                        col++
-                        if (queenPosition.first < whiteKingPosition.first) row++ else row--
-                    }
+                // Verificare pe rând
+                if (queenPosition.second == whiteKingPosition.second && isClearRowPath(queenPosition, whiteKingPosition)) {
+                    Log.d(TAG, "Regele alb este în șah de regină neagră")
+                    return true
+                }
 
-                    if (clearPath) {
-                        Log.d(TAG, "Regele alb este în șah de regină neagră")
-                        return true
-                    }
+                // Verificare pe diagonală
+                if (dx == dy && isClearDiagonalPath(queenPosition, whiteKingPosition)) {
+                    Log.d(TAG, "Regele alb este în șah de regină neagră")
+                    return true
                 }
             }
         }
 
         return false
     }
+
+
+
+
+
+    fun isBlackKingInCheckByUWhiteQueen(): Boolean {
+        val blackKingPosition = piecesBox.find { it.rank == ChessRank.KING  && it.player == ChessPlayer.BLACK }?.let { it.col to it.row } ?: return false
+        return isUWhiteQueenChecking(blackKingPosition)
+    }
+
+    fun isWhiteKingInCheckByUBlackQueen(): Boolean {
+        val whiteKingPosition = piecesBox.find { it.rank == ChessRank.KING && it.player == ChessPlayer.WHITE }?.let { it.col to it.row } ?: return false
+        return isUBlackQueenChecking(whiteKingPosition)
+    }
+
+    fun isUWhiteQueenChecking(kingPosition: Pair<Int, Int>): Boolean {
+        val (kingCol, kingRow) = kingPosition
+
+        // Check one-square moves in all directions
+        val directions = listOf(
+            Pair(1, 0), Pair(-1, 0), // Horizontal
+            Pair(0, 1), Pair(0, -1), // Vertical
+            Pair(1, 1), Pair(-1, -1), // Diagonal
+            Pair(1, -1), Pair(-1, 1) // Diagonal
+        )
+
+        for ((dc, dr) in directions) {
+            val newCol = kingCol + dc
+            val newRow = kingRow + dr
+            var piece = pieceAt(newCol, newRow)
+                if (piece != null && piece.rank == ChessRank.UQUEEN&&piece.player == ChessPlayer.WHITE) {
+                    return true
+                }
+        }
+
+        // Check rook-like moves
+        return checkRookMovesForUQueen(kingCol, kingRow, ChessPlayer.WHITE)
+    }
+
+    fun isUBlackQueenChecking(kingPosition: Pair<Int, Int>): Boolean {
+        val (kingCol, kingRow) = kingPosition
+
+        // Check one-square moves in all directions
+        val directions = listOf(
+            Pair(1, 0), Pair(-1, 0), // Horizontal
+            Pair(0, 1), Pair(0, -1), // Vertical
+            Pair(1, 1), Pair(-1, -1), // Diagonal
+            Pair(1, -1), Pair(-1, 1) // Diagonal
+        )
+
+        for ((dc, dr) in directions) {
+            val newCol = kingCol + dc
+            val newRow = kingRow + dr
+            val piece = pieceAt(newCol, newRow)
+            if (piece !=null && piece.rank == ChessRank.UQUEEN&&piece.player == ChessPlayer.WHITE) {
+                return true
+            }
+        }
+
+        // Check rook-like moves
+        return checkRookMovesForUQueen(kingCol, kingRow, ChessPlayer.BLACK)
+    }
+
+    fun checkRookMovesForUQueen(kingCol: Int, kingRow: Int, player: ChessPlayer): Boolean {
+        val directions = listOf(
+            Pair(1, 0), Pair(-1, 0), // Horizontal
+            Pair(0, 1), Pair(0, -1) // Vertical
+        )
+
+        for ((dc, dr) in directions) {
+            var col = kingCol + dc
+            var row = kingRow + dr
+
+            while (col in 0..7 && row in 0..7) {
+                val piece = pieceAt(col, row)
+
+                if (piece != null) {
+                    if (piece.rank == ChessRank.UQUEEN) {
+                        return true
+                    }
+                    break
+                }
+
+                col += dc
+                row += dr
+            }
+        }
+
+        return false
+    }
+
 
 
     fun isBlackKingInCheckByWhitePawn(): Boolean {
@@ -519,6 +657,47 @@ class ChessModel {
                 )
                 if (attackingPositions.contains(whiteKingPosition)) {
                     Log.d(TAG, "Regele alb este în șah de pion")
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun isBlackKingInCheckByUWhitePawn(): Boolean {
+        val blackKingPosition = Pair(blackKingCol, blackKingRow)
+
+        for (piece in piecesBox) {
+            if (piece.player == ChessPlayer.WHITE && piece.rank == ChessRank.UPAWN) {
+                val pawnPosition = Pair(piece.col, piece.row)
+                val attackingPositions = listOf(
+                    Pair(pawnPosition.first - 1, pawnPosition.second + 1),
+                    Pair(pawnPosition.first + 1, pawnPosition.second + 1),
+                    Pair(pawnPosition.first + 2, pawnPosition.second + 2),
+                    Pair(pawnPosition.first - 2, pawnPosition.second + 2)
+                )
+                if (attackingPositions.contains(blackKingPosition)) {
+                    Log.d(TAG, "Regele negru este în șah de upion")
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    fun isWhiteKingInCheckByUBlackPawn(): Boolean {
+        val whiteKingPosition = Pair(whiteKingCol, whiteKingRow)
+
+        for (piece in piecesBox) {
+            if (piece.player == ChessPlayer.BLACK && piece.rank == ChessRank.UPAWN) {
+                val pawnPosition = Pair(piece.col, piece.row)
+                val attackingPositions = listOf(
+                    Pair(pawnPosition.first - 1, pawnPosition.second - 1),
+                    Pair(pawnPosition.first + 1, pawnPosition.second - 1),
+                    Pair(pawnPosition.first + 2, pawnPosition.second + 2),
+                    Pair(pawnPosition.first - 2, pawnPosition.second + 2)
+                )
+                if (attackingPositions.contains(whiteKingPosition)) {
+                    Log.d(TAG, "Regele alb este în șah de upion")
                     return true
                 }
             }
@@ -652,46 +831,84 @@ class ChessModel {
 
 
     fun negru_in_sah(): Boolean{
-        if(isBlackKingInCheckByWhiteKnight()||isBlackKingInCheckByWhitePawn()||isBlackKingInCheckByWhiteRook()||isBlackKingInCheckByWhiteBishop()||isBlackKingInCheckByWhiteQueen())
+        if(currentPlayer==ChessPlayer.WHITE &&(isBlackKingInCheckByUWhiteRook()||isBlackKingInCheckByUWhiteQueen()||isBlackKingInCheckByUWhitePawn()||isBlackKingInCheckByWhiteKnight()||isBlackKingInCheckByWhitePawn()||isBlackKingInCheckByWhiteRook()||isBlackKingInCheckByWhiteBishop()||isBlackKingInCheckByWhiteQueen()))
             return true
         return false
     }
     fun alb_in_sah(): Boolean{
-        if(isWhiteKingInCheckByBlackKnight()||isWhiteKingInCheckByBlackBishop()||isWhiteKingInCheckByBlackQueen()||isWhiteKingInCheckByBlackRook()||isWhiteKingInCheckByBlackPawn())
+        if(currentPlayer==ChessPlayer.WHITE &&( isWhiteKingInCheckByUBlackRook()||isWhiteKingInCheckByUBlackPawn()||isWhiteKingInCheckByUBlackQueen()||isWhiteKingInCheckByBlackKnight()||isWhiteKingInCheckByBlackBishop()||isWhiteKingInCheckByBlackQueen()||isWhiteKingInCheckByBlackRook()||isWhiteKingInCheckByBlackPawn()))
             return true
         return false
     }
 
-    fun canKingEscapeCheck(player: ChessPlayer): Boolean {
-        val (kingCol, kingRow) = if (player == ChessPlayer.WHITE) Pair(whiteKingCol, whiteKingRow) else Pair(blackKingCol, blackKingRow)
-        val possibleMoves = listOf(
-            Pair(kingCol - 1, kingRow - 1), Pair(kingCol, kingRow - 1), Pair(kingCol + 1, kingRow - 1),
-            Pair(kingCol - 1, kingRow),                             Pair(kingCol + 1, kingRow),
-            Pair(kingCol - 1, kingRow + 1), Pair(kingCol, kingRow + 1), Pair(kingCol + 1, kingRow + 1)
+    fun canKingEscapeCheckmate(kingColor: ChessPlayer): Boolean {
+        // Verificăm dacă regele este în șah
+        if (kingColor == ChessPlayer.WHITE && !alb_in_sah()) {
+            return true // Regele alb nu este în șah, deci poate să scape
+        } else if (kingColor == ChessPlayer.BLACK && !negru_in_sah()) {
+            return true // Regele negru nu este în șah, deci poate să scape
+        }
+
+        // Determinăm poziția regelui
+        val kingPosition = if (kingColor == ChessPlayer.WHITE) Pair(whiteKingCol, whiteKingRow) else Pair(blackKingCol, blackKingRow)
+
+        // Verificăm toate posibilele mutări ale regelui
+        val possibleMoves = arrayOf(
+            Pair(kingPosition.first + 1, kingPosition.second),
+            Pair(kingPosition.first - 1, kingPosition.second),
+            Pair(kingPosition.first, kingPosition.second + 1),
+            Pair(kingPosition.first, kingPosition.second - 1),
+            Pair(kingPosition.first + 1, kingPosition.second + 1),
+            Pair(kingPosition.first - 1, kingPosition.second - 1),
+            Pair(kingPosition.first + 1, kingPosition.second - 1),
+            Pair(kingPosition.first - 1, kingPosition.second + 1)
         )
 
         for (move in possibleMoves) {
-            val (newCol, newRow) = move
-            if (newCol in 0..7 && newRow in 0..7) {
-                val originalPiece = pieceAt(newCol, newRow)
-                val king = pieceAt(kingCol, kingRow)
-                piecesBox.remove(king)
-                originalPiece?.let { piecesBox.remove(it) }
-                piecesBox.add(ChessPiece(newCol, newRow, player, ChessRank.KING, king!!.resID))
+            if (move.first in 0..7 && move.second in 0..7) {
+                // Salvăm piesa de pe poziția de destinație (dacă există una acolo)
+                val destinationPiece = pieceAt(move.first, move.second)
 
-                val kingInCheck = if (player == ChessPlayer.WHITE) alb_in_sah() else negru_in_sah()
+                // Mutăm temporar regele
+                if (kingColor == ChessPlayer.WHITE) {
+                    whiteKingCol = move.first
+                    whiteKingRow = move.second
+                } else {
+                    blackKingCol = move.first
+                    blackKingRow = move.second
+                }
 
-                // Restore the original position
-                piecesBox.remove(pieceAt(newCol, newRow))
-                piecesBox.add(ChessPiece(kingCol, kingRow, player, ChessRank.KING, king.resID))
-                originalPiece?.let { piecesBox.add(it) }
-
-                if (!kingInCheck) {
+                // Verificăm dacă regele nu mai este în șah după mutarea temporară
+                val isCheck = if (kingColor == ChessPlayer.WHITE) alb_in_sah() else negru_in_sah()
+                if (!isCheck) {
+                    // Dacă nu este în șah, putem reveni la poziția inițială a regelui și returna true
+                    if (kingColor == ChessPlayer.WHITE) {
+                        whiteKingCol = kingPosition.first
+                        whiteKingRow = kingPosition.second
+                    } else {
+                        blackKingCol = kingPosition.first
+                        blackKingRow = kingPosition.second
+                    }
                     return true
+                }
+
+                // Dacă este în șah, revenim la starea inițială a regelui
+                if (kingColor == ChessPlayer.WHITE) {
+                    whiteKingCol = kingPosition.first
+                    whiteKingRow = kingPosition.second
+                } else {
+                    blackKingCol = kingPosition.first
+                    blackKingRow = kingPosition.second
+                }
+
+                // Punem înapoi piesa pe poziția de destinație (dacă exista una)
+                if (destinationPiece != null) {
+                    piecesBox.add(destinationPiece)
                 }
             }
         }
-        return false
+
+        return false // Nu există mutare prin care regele să scape de șah mat
     }
 
 
@@ -813,12 +1030,10 @@ class ChessModel {
 
 
     fun uWhiteRookVer(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int): Boolean {
-        // Verifică dacă este o mutare normală de tură
         if (whiteRookVer(fromCol, fromRow, toCol, toRow)) {
             return true
         }
 
-        // Verifică dacă este o mutare specială de UROOK (sărind peste o piesă)
         if (fromCol == toCol) {
             val step = if (toRow > fromRow) 1 else -1
             for (row in fromRow + step until toRow step step) {
@@ -851,12 +1066,10 @@ class ChessModel {
     }
 
     fun uBlackRookVer(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int): Boolean {
-        // Verifică dacă este o mutare normală de tură
         if (blackRookVer(fromCol, fromRow, toCol, toRow)) {
             return true
         }
 
-        // Verifică dacă este o mutare specială de UROOK (sărind peste o piesă)
         if (fromCol == toCol) {
             val step = if (toRow > fromRow) 1 else -1
             for (row in fromRow + step until toRow step step) {
@@ -950,7 +1163,6 @@ class ChessModel {
 
 
     fun uwhitePawnVer(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int): Boolean {
-        // Mișcare inițială de două pătrate sau un pătrat
         if (fromRow == 1) {
             if ((toRow == fromRow + 1 || toRow == fromRow + 2) && toCol == fromCol) {
                 if (toRow == fromRow + 1 && pieceAt(toCol, toRow) == null) {
@@ -965,7 +1177,6 @@ class ChessModel {
             }
         }
 
-        // Capturare diagonală normală
         if (toRow == fromRow + 1) {
             val rightDiagonalPiece = pieceAt(fromCol + 1, fromRow + 1)
             if (toCol == fromCol + 1 && rightDiagonalPiece != null && rightDiagonalPiece.player == ChessPlayer.BLACK) {
@@ -977,7 +1188,6 @@ class ChessModel {
             }
         }
 
-        // Capturare diagonală la două pătrate distanță
         if (toRow == fromRow + 2) {
             val rightDiagonalPiece = pieceAt(fromCol + 2, fromRow + 2)
             if (toCol == fromCol + 2 && rightDiagonalPiece != null && rightDiagonalPiece.player == ChessPlayer.BLACK) {
@@ -993,7 +1203,6 @@ class ChessModel {
     }
 
     fun ublackPawnVer(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int): Boolean {
-        // Mișcare inițială de două pătrate sau un pătrat
         if (fromRow == 6) {
             if ((toRow == fromRow - 1 || toRow == fromRow - 2) && toCol == fromCol) {
                 if (toRow == fromRow - 1 && pieceAt(toCol, toRow) == null) {
@@ -1008,7 +1217,6 @@ class ChessModel {
             }
         }
 
-        // Capturare diagonală normală
         if (toRow == fromRow - 1) {
             val rightDiagonalPiece = pieceAt(fromCol + 1, fromRow - 1)
             if (toCol == fromCol + 1 && rightDiagonalPiece != null && rightDiagonalPiece.player == ChessPlayer.WHITE) {
@@ -1020,7 +1228,6 @@ class ChessModel {
             }
         }
 
-        // Capturare diagonală la două pătrate distanță
         if (toRow == fromRow - 2) {
             val rightDiagonalPiece = pieceAt(fromCol + 2, fromRow - 2)
             if (toCol == fromCol + 2 && rightDiagonalPiece != null && rightDiagonalPiece.player == ChessPlayer.WHITE) {
@@ -1130,13 +1337,11 @@ class ChessModel {
         val colDiff = Math.abs(toCol - fromCol)
         val rowDiff = Math.abs(toRow - fromRow)
 
-        // Verificare mutare pe diagonala un patrat
         if (colDiff == 1 && rowDiff == 1) {
             val targetPiece = pieceAt(toCol, toRow)
             return targetPiece == null || targetPiece.player == ChessPlayer.BLACK
         }
 
-        // Verificare mutare ca o tura
         if (colDiff == 0 || rowDiff == 0) {
             val stepCol = if (toCol - fromCol > 0) 1 else if (toCol - fromCol < 0) -1 else 0
             val stepRow = if (toRow - fromRow > 0) 1 else if (toRow - fromRow < 0) -1 else 0
@@ -1163,13 +1368,11 @@ class ChessModel {
         val colDiff = Math.abs(toCol - fromCol)
         val rowDiff = Math.abs(toRow - fromRow)
 
-        // Verificare mutare pe diagonala un patrat
         if (colDiff == 1 && rowDiff == 1) {
             val targetPiece = pieceAt(toCol, toRow)
             return targetPiece == null || targetPiece.player == ChessPlayer.WHITE
         }
 
-        // Verificare mutare ca o tura
         if (colDiff == 0 || rowDiff == 0) {
             val stepCol = if (toCol - fromCol > 0) 1 else if (toCol - fromCol < 0) -1 else 0
             val stepRow = if (toRow - fromRow > 0) 1 else if (toRow - fromRow < 0) -1 else 0
@@ -1230,31 +1433,345 @@ class ChessModel {
     }
 
 
+
+
+
+
+
+
+
     fun upgradeRook(player: ChessPlayer) {
         when (player) {
             ChessPlayer.WHITE -> {
-                if (whiteMoveCount.value ?: 0 >= 4) {
+                if (currentPlayer == ChessPlayer.WHITE && whiteMoveCount.value ?: 0 >= 5) {
                     changeToURook(ChessPlayer.WHITE)
+                    currentPlayer = ChessPlayer.BLACK
                 }
-                whiteMoveCount.value = whiteMoveCount.value?.minus(4)
+                if(whiteMoveCount.value ?: 0 >= 5)
+                    whiteMoveCount.value = whiteMoveCount.value?.minus(5)
+                else
+                {
+                    whiteMoveCount.postValue(0)
+                }
             }
             ChessPlayer.BLACK -> {
-                if (blackMoveCount.value ?: 0 >= 4) {
+                if (currentPlayer == ChessPlayer.BLACK&&blackMoveCount.value ?: 0 >= 5) {
                     changeToURook(ChessPlayer.BLACK)
+                    currentPlayer = ChessPlayer.WHITE
                 }
-                blackMoveCount.value = blackMoveCount.value?.minus(4)
+                if(blackMoveCount.value ?: 0 >= 5)
+                    blackMoveCount.value = blackMoveCount.value?.minus(5)
+                else
+                {
+                    blackMoveCount.postValue(0)
+                }
             }
         }
     }
 
     private fun changeToURook(player: ChessPlayer) {
-        // Căutăm toate piesele de tip turn ale jucătorului curent
         val rook = piecesBox.find { it.rank == ChessRank.ROOK && it.player == player }
 
-        // Dacă am găsit o piesă de tip turn, o upgradem la UROOK
         if (rook != null) {
             piecesBox.remove(rook)
             piecesBox.add(ChessPiece(rook.col, rook.row, player, ChessRank.UROOK, if (player == ChessPlayer.WHITE) R.drawable.u_white_rook else R.drawable.u_black_rook))
+        }
+    }
+
+
+    fun upgradePawn(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+                if (currentPlayer == ChessPlayer.WHITE && whiteMoveCount.value ?: 0 >= 2) {
+                    changeToUPawn(ChessPlayer.WHITE)
+                    currentPlayer = ChessPlayer.BLACK
+                }
+                if(whiteMoveCount.value ?: 0 >= 2)
+                    whiteMoveCount.value = whiteMoveCount.value?.minus(2)
+                else
+                {
+                    whiteMoveCount.postValue(0)
+                }
+            }
+            ChessPlayer.BLACK -> {
+                if (currentPlayer == ChessPlayer.BLACK&&blackMoveCount.value ?: 0 >= 2) {
+                    changeToUPawn(ChessPlayer.BLACK)
+                    currentPlayer = ChessPlayer.WHITE
+                }
+                if(blackMoveCount.value ?: 0 >= 2)
+                    blackMoveCount.value = blackMoveCount.value?.minus(2)
+                else
+                {
+                    blackMoveCount.postValue(0)
+                }
+            }
+        }
+    }
+
+    private fun changeToUPawn(player: ChessPlayer) {
+        val pawn = piecesBox.find { it.rank == ChessRank.PAWN && it.player == player }
+
+        if (pawn != null) {
+            piecesBox.remove(pawn)
+            piecesBox.add(ChessPiece(pawn.col, pawn.row, player, ChessRank.UPAWN, if (player == ChessPlayer.WHITE) R.drawable.u_white_pawn else R.drawable.u_black_pawn))
+
+        }
+    }
+
+
+
+    fun upgradeQueen(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+                if (currentPlayer == ChessPlayer.WHITE && whiteMoveCount.value ?: 0 >= 3) {
+                    changeToUQueen(ChessPlayer.BLACK)
+                    currentPlayer = ChessPlayer.BLACK
+                }
+                if(whiteMoveCount.value ?: 0 >= 3)
+                    whiteMoveCount.value = whiteMoveCount.value?.minus(3)
+                else
+                {
+                    whiteMoveCount.postValue(0)
+                }
+            }
+            ChessPlayer.BLACK -> {
+                if (currentPlayer == ChessPlayer.BLACK&&blackMoveCount.value ?: 0 >= 3) {
+                    changeToUQueen(ChessPlayer.WHITE)
+                    currentPlayer = ChessPlayer.WHITE
+                }
+                if(blackMoveCount.value ?: 0 >= 3)
+                    blackMoveCount.value = blackMoveCount.value?.minus(3)
+                else
+                {
+                    blackMoveCount.postValue(0)
+                }
+            }
+        }
+    }
+
+    private fun changeToUQueen(player: ChessPlayer) {
+        val queen = piecesBox.find { it.rank == ChessRank.QUEEN && it.player == player }
+
+        if (queen != null) {
+            piecesBox.remove(queen)
+            piecesBox.add(ChessPiece(queen.col, queen.row, player, ChessRank.UQUEEN, if (player == ChessPlayer.WHITE) R.drawable.u_white_queen else R.drawable.u_black_queen))
+
+        }
+    }
+
+
+
+
+    fun upgradeBishop(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+                if (currentPlayer == ChessPlayer.WHITE && whiteMoveCount.value ?: 0 >= 1) {
+                    changeToKnight(ChessPlayer.WHITE)
+                    currentPlayer = ChessPlayer.BLACK
+                }
+                if(whiteMoveCount.value ?: 0 >= 1)
+                    whiteMoveCount.value = whiteMoveCount.value?.minus(1)
+                else
+                {
+                    whiteMoveCount.postValue(0)
+                }
+            }
+            ChessPlayer.BLACK -> {
+                if (currentPlayer == ChessPlayer.BLACK && blackMoveCount.value ?: 0 >= 1) {
+                    changeToKnight(ChessPlayer.BLACK)
+                    currentPlayer = ChessPlayer.WHITE
+                }
+                if(blackMoveCount.value ?: 0 >= 1)
+                    blackMoveCount.value = blackMoveCount.value?.minus(1)
+                else
+                {
+                    blackMoveCount.postValue(0)
+                }
+            }
+        }
+    }
+
+    private fun changeToKnight(player: ChessPlayer) {
+        val bishop = piecesBox.find { it.rank == ChessRank.BISHOP && it.player == player }
+
+        if (bishop != null) {
+            piecesBox.remove(bishop)
+            piecesBox.add(ChessPiece(bishop.col, bishop.row, player, ChessRank.KNIGHT, if (player == ChessPlayer.WHITE) R.drawable.white_knight else R.drawable.black_knight))
+
+        }
+    }
+
+
+
+
+
+    fun upgradeKnight(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+                if (currentPlayer == ChessPlayer.WHITE && whiteMoveCount.value ?: 0 >= 1) {
+                    changeToBishop(ChessPlayer.WHITE)
+                    currentPlayer = ChessPlayer.BLACK
+                }
+                if(whiteMoveCount.value ?: 0 >= 1)
+                    whiteMoveCount.value = whiteMoveCount.value?.minus(1)
+                else
+                {
+                    whiteMoveCount.postValue(0)
+                }
+            }
+            ChessPlayer.BLACK -> {
+                if (currentPlayer == ChessPlayer.BLACK&&blackMoveCount.value ?: 0 >= 1) {
+                    changeToBishop(ChessPlayer.BLACK)
+                    currentPlayer = ChessPlayer.WHITE
+                }
+                if(blackMoveCount.value ?: 0 >= 1)
+                blackMoveCount.value = blackMoveCount.value?.minus(1)
+                else
+                {
+                    blackMoveCount.postValue(0)
+                }
+            }
+        }
+    }
+
+    private fun changeToBishop(player: ChessPlayer) {
+        val knight = piecesBox.find { it.rank == ChessRank.KNIGHT && it.player == player }
+
+        if (knight != null) {
+            piecesBox.remove(knight)
+            piecesBox.add(ChessPiece(knight.col, knight.row, player, ChessRank.BISHOP, if (player == ChessPlayer.WHITE) R.drawable.white_bishop else R.drawable.black_bishop))
+
+        }
+    }
+
+
+
+
+    fun downgradePawn(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+
+                    changeToPawn(ChessPlayer.WHITE)
+
+
+
+            }
+            ChessPlayer.BLACK -> {
+
+                    changeToPawn(ChessPlayer.BLACK)
+
+
+
+            }
+        }
+    }
+
+    private fun changeToPawn(player: ChessPlayer) {
+        val pawn = piecesBox.find { it.rank == ChessRank.UPAWN && it.player == player }
+
+        if (pawn != null) {
+            piecesBox.remove(pawn)
+            piecesBox.add(ChessPiece(pawn.col, pawn.row, player, ChessRank.PAWN, if (player == ChessPlayer.WHITE) R.drawable.white_pawn else R.drawable.black_pawn))
+
+        }
+    }
+
+
+    fun downgradeRook(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+
+                    changeToRook(ChessPlayer.WHITE)
+
+
+            }
+            ChessPlayer.BLACK -> {
+
+                    changeToRook(ChessPlayer.BLACK)
+
+
+
+            }
+        }
+    }
+
+    private fun changeToRook(player: ChessPlayer) {
+        val pawn = piecesBox.find { it.rank == ChessRank.UROOK && it.player == player }
+
+        if (pawn != null) {
+            piecesBox.remove(pawn)
+            piecesBox.add(ChessPiece(pawn.col, pawn.row, player, ChessRank.ROOK, if (player == ChessPlayer.WHITE) R.drawable.white_rook else R.drawable.black_rook))
+
+        }
+    }
+
+
+
+    fun downgradeQueen(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+
+                    changeToQueen(ChessPlayer.WHITE)
+
+
+
+            }
+            ChessPlayer.BLACK -> {
+
+                    changeToQueen(ChessPlayer.BLACK)
+
+
+
+            }
+        }
+    }
+
+    private fun changeToQueen(player: ChessPlayer) {
+        val pawn = piecesBox.find { it.rank == ChessRank.UQUEEN && it.player == player }
+
+        if (pawn != null) {
+            piecesBox.remove(pawn)
+            piecesBox.add(ChessPiece(pawn.col, pawn.row, player, ChessRank.QUEEN, if (player == ChessPlayer.WHITE) R.drawable.white_queen else R.drawable.black_queen))
+
+        }
+    }
+
+
+
+    fun downgradeKinght(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+
+                    changeToBishop(ChessPlayer.WHITE)
+
+
+
+            }
+            ChessPlayer.BLACK -> {
+
+                    changeToBishop(ChessPlayer.BLACK)
+
+
+
+            }
+        }
+    }
+    fun downgradeBishop(player: ChessPlayer) {
+        when (player) {
+            ChessPlayer.WHITE -> {
+
+                    changeToKnight(ChessPlayer.WHITE)
+
+
+
+            }
+            ChessPlayer.BLACK -> {
+
+                    changeToKnight(ChessPlayer.BLACK)
+
+
+
+            }
         }
     }
 
@@ -1283,13 +1800,13 @@ class ChessModel {
         piecesBox.add(ChessPiece(0, 0, ChessPlayer.WHITE, ChessRank.ROOK,R.drawable.white_rook))
         piecesBox.add(ChessPiece(1, 0, ChessPlayer.WHITE, ChessRank.KNIGHT,R.drawable.white_knight))
         piecesBox.add(ChessPiece(2, 0, ChessPlayer.WHITE, ChessRank.BISHOP,R.drawable.white_bishop))
-        piecesBox.add(ChessPiece(3, 0, ChessPlayer.WHITE, ChessRank.UQUEEN,R.drawable.u_white_queen))
+        piecesBox.add(ChessPiece(3, 0, ChessPlayer.WHITE, ChessRank.QUEEN,R.drawable.white_queen))
         piecesBox.add(ChessPiece(4, 0, ChessPlayer.WHITE, ChessRank.KING,R.drawable.white_king))
         piecesBox.add(ChessPiece(5, 0, ChessPlayer.WHITE, ChessRank.BISHOP,R.drawable.white_bishop))
         piecesBox.add(ChessPiece(6, 0, ChessPlayer.WHITE, ChessRank.KNIGHT,R.drawable.white_knight))
         piecesBox.add(ChessPiece(7, 0, ChessPlayer.WHITE, ChessRank.ROOK,R.drawable.white_rook))
 
-        piecesBox.add(ChessPiece(0, 1, ChessPlayer.WHITE, ChessRank.UPAWN,R.drawable.u_white_pawn))
+        piecesBox.add(ChessPiece(0, 1, ChessPlayer.WHITE, ChessRank.PAWN,R.drawable.white_pawn))
         piecesBox.add(ChessPiece(1, 1, ChessPlayer.WHITE, ChessRank.PAWN,R.drawable.white_pawn))
         piecesBox.add(ChessPiece(2, 1, ChessPlayer.WHITE, ChessRank.PAWN,R.drawable.white_pawn))
         piecesBox.add(ChessPiece(3, 1, ChessPlayer.WHITE, ChessRank.PAWN,R.drawable.white_pawn))
@@ -1302,13 +1819,13 @@ class ChessModel {
         piecesBox.add(ChessPiece(0, 7, ChessPlayer.BLACK, ChessRank.ROOK,R.drawable.black_rook))
         piecesBox.add(ChessPiece(1, 7, ChessPlayer.BLACK, ChessRank.KNIGHT,R.drawable.black_knight))
         piecesBox.add(ChessPiece(2, 7, ChessPlayer.BLACK, ChessRank.BISHOP,R.drawable.black_bishop))
-        piecesBox.add(ChessPiece(3, 7, ChessPlayer.BLACK, ChessRank.UQUEEN,R.drawable.u_black_queen))
+        piecesBox.add(ChessPiece(3, 7, ChessPlayer.BLACK, ChessRank.QUEEN,R.drawable.black_queen))
         piecesBox.add(ChessPiece(4, 7, ChessPlayer.BLACK, ChessRank.KING,R.drawable.black_king))
         piecesBox.add(ChessPiece(5, 7, ChessPlayer.BLACK, ChessRank.BISHOP,R.drawable.black_bishop))
         piecesBox.add(ChessPiece(6, 7, ChessPlayer.BLACK, ChessRank.KNIGHT,R.drawable.black_knight))
         piecesBox.add(ChessPiece(7, 7, ChessPlayer.BLACK, ChessRank.ROOK,R.drawable.black_rook))
 
-        piecesBox.add(ChessPiece(0, 6, ChessPlayer.BLACK, ChessRank.UPAWN,R.drawable.u_black_pawn))
+        piecesBox.add(ChessPiece(0, 6, ChessPlayer.BLACK, ChessRank.PAWN,R.drawable.black_pawn))
         piecesBox.add(ChessPiece(1, 6, ChessPlayer.BLACK, ChessRank.PAWN,R.drawable.black_pawn))
         piecesBox.add(ChessPiece(2, 6, ChessPlayer.BLACK, ChessRank.PAWN,R.drawable.black_pawn))
         piecesBox.add(ChessPiece(3, 6, ChessPlayer.BLACK, ChessRank.PAWN,R.drawable.black_pawn))
